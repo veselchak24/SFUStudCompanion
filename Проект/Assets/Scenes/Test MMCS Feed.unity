@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   templateNews: {fileID: 7712636128334749864, guid: 5d5e4316475e2d24aba7632932f9f05a, type: 3}
   canvasParent: {fileID: 1607691243}
+  startIndexParsing: 1
+  countNews: 9
 --- !u!4 &197699878
 Transform:
   m_ObjectHideFlags: 0

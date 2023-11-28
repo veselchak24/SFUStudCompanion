@@ -10,6 +10,10 @@ public class TemplateFeed : MonoBehaviour
     [SerializeField] private Image templateNews;
     [SerializeField] private Canvas canvasParent;
 
+    [Header("Test params")]
+    [SerializeField] private int startIndexParsing = 1;
+    [SerializeField] private int countNews = 9;
+
     private List<Image> NewsPosts;
 
     private void Start()
@@ -17,7 +21,7 @@ public class TemplateFeed : MonoBehaviour
         MMCSFeed feed = new MMCSFeed();
         this.NewsPosts = new List<Image>();
 
-        feed.LoadNewsNodes();
+        feed.LoadNewsNodes(startIndexParsing,countNews);
 
         List<MMCSFeed.NewsNode> newsNodes = feed.GetNewsNodes();
 
