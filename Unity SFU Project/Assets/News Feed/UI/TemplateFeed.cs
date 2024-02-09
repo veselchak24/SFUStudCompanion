@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,12 +17,18 @@ public class TemplateFeed : MonoBehaviour
 
     private List<Image> NewsPosts;
 
-    private void Start()
+    /// <summary>
+    /// Флаг, для пометки загрузки новостей
+    /// </summary>
+    private bool isLoadNews = false;
+
+    private IEnumerator Start()
     {
         MMCSFeed feed = new MMCSFeed();
         this.NewsPosts = new List<Image>();
 
-        feed.LoadNewsNodes(startIndexParsing,countNews);
+        // Дожидаемся получения и обработки страницы
+        yield return StartCoroutine(feed.LoadNewsNodes(startIndexParsing, countNews));
 
         List<MMCSFeed.NewsNode> newsNodes = feed.GetNewsNodes();
 
@@ -49,11 +56,14 @@ public class TemplateFeed : MonoBehaviour
             this.NewsPosts.Add(newNews);
         }
 
+        this.isLoadNews = true;
     }
 
     private void Update()
     {
-        scrollFeed();
+        // Если убрать, то строка 31 не успевает выполнится и scrollFeed запрашивает несозданные ноды новостей
+        if (isLoadNews)
+            scrollFeed();
     }
 
     private float y;

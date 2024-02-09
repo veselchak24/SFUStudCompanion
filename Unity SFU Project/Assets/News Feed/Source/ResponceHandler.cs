@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.Assertions;
 using HtmlAgilityPack;
+using System.Linq;
 
 /// <summary>
 /// Класс, для работы с html страницами
@@ -9,7 +10,7 @@ using HtmlAgilityPack;
 class ResponceHandler
 {
     private HtmlDocument doc;
-    
+
     public ResponceHandler(string html)
     {
         this.doc = new HtmlDocument();
@@ -17,7 +18,7 @@ class ResponceHandler
     }
 
     /// <summary>
-    /// Выбирает элементы из html по ключу(ключам) <br></br>
+    /// Выбирает элементы из html по ключу(ключам)
     /// </summary>
     /// <param name="key">Вид ключа: "//element //element2[@class="class1"] ..."</param>
     /// <returns>Список html найденных элементов</returns>
@@ -38,31 +39,53 @@ class ResponceHandler
     }
 
     /// <summary>
-    /// 
+    /// Ищет дочерние узлы по ключу(ключам)
     /// </summary>
     /// <param name="key">Вид ключа: "//element //element2[@class="class1"] ..."</param>
-    /// <returns>Возвращает список текста найденных элементов</returns>
-    public List<string> GetTextInElements(string key)
+    /// <returns>Список  объектов класса ResponceHandler для найденных узлов</returns>
+    public List<ResponceHandler> SelectChildren(string key)
     {
         Assert.IsTrue(key != null && key.Length > 0);
 
-        List<string> listResults = new List<string>();
+        return this.doc.DocumentNode.HasChildNodes ? this.doc.DocumentNode.ChildNodes.Select(node => new ResponceHandler(node.OuterHtml)).ToList() : null;
+    }
 
-        var selectedNodes = doc.DocumentNode.SelectNodes(key);
+    /// <summary>
+    /// Ищет дочерний узлел по ключу(ключам)
+    /// </summary>
+    /// <param name="key">Вид ключа: "//element //element2[@class="class1"] ..."</param>
+    /// <returns>объект класса ResponceHandler для найденного узла</returns>
+    public ResponceHandler SelectChild(string key)
+    {
+        Assert.IsTrue(key != null && key.Length > 0);
 
-        Assert.IsTrue(selectedNodes != null && selectedNodes.Count > 0, $"ResponceHandler.GetTextInElements: empty selector for key {key}");
+        var node = this.doc.DocumentNode.SelectSingleNode(key);
 
-        foreach (HtmlNode node in selectedNodes)
-        {
-            if (node == null) break;
+        return node is null ? null : new ResponceHandler(node.OuterHtml);
+    }
 
-            string text = node.InnerText;
+    /// <summary>
+    /// Возвращает весь текст, содержащийся внутри элемента и его дочерних
+    /// </summary>
+    /// <param name="key">Вид ключа: "//element //element2[@class="class1"] ..."</param>
+    /// <returns>Возвращает список текста найденных элементов</returns>
+    public string GetInnerText() => this.doc.DocumentNode.InnerText;
 
-            if (text != null && text != "" && text[0] != '<')
-                listResults.Add(text);
-        }
+    /// <summary>
+    ///  Возвращает текст в аттрибуте элемента
+    /// </summary>
+    /// <param name="attr">Имя аттрибута</param>
+    /// <returns></returns>
+    public string GetAttributeValue(string attr)
+    {
+        Assert.IsTrue(attr != null && attr.Length > 0);
 
-        return listResults;
+        var node = this.doc.DocumentNode;
+
+        if (node.Name == "#document")
+            node = node.FirstChild;
+
+        return node.GetAttributeValue(attr, null);
     }
 
     /// <returns>Возвращает текст внутри текущего элемента</returns>
