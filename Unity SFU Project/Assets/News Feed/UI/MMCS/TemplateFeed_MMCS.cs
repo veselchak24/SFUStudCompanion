@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
-public class TemplateFeed : MonoBehaviour
+public class TemplateFeed_MMCS : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private Image templateNews;
