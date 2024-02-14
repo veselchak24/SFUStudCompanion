@@ -2,7 +2,7 @@ using HtmlAgilityPack;
 
 using System;
 using System.Collections.Generic;
-
+using System.Net.Http;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Networking;
@@ -23,10 +23,10 @@ partial class MMCSFeed
             yield return webRequest.SendWebRequest();
 
             if (webRequest.result == UnityWebRequest.Result.InProgress)
-                new Exception("webRequest in progress. Так быть не должно");
+                throw new HttpRequestException("webRequest in progress. Так быть не должно");
 
             if (webRequest.result != UnityWebRequest.Result.Success)
-                new Exception("Network error from conection to mmcs.sfedu.ru");
+                throw new WebException("Network error from conection to mmcs.sfedu.ru");
 
             if (webRequest.downloadHandler.text != "")
                 yield return new ResponceHandler(webRequest.downloadHandler.text);
@@ -35,7 +35,7 @@ partial class MMCSFeed
         }
     }
 
-    public partial IEnumerator LoadNewsNodes(int startIndex = 1, int count = 9)
+    public partial IEnumerator LoadNewsNodes(int startIndex, int count)
     {
         Assert.IsTrue(startIndex > 0); // примечание: 0 - индекс фотки мехмата
         Assert.IsTrue(count > 0);

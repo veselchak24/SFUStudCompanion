@@ -40,7 +40,7 @@ partial class MMCSFeed
     public partial List<NewsNode> GetNewsNodes();
 
     /// <summary>
-    /// Класс, содержащий в себе данные поста с сайта MMCS
+    /// Класс, содержащий данные поста с сайта MMCS
     /// </summary>
     public partial class NewsNode
     {

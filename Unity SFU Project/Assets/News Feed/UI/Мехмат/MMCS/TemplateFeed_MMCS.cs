@@ -1,8 +1,10 @@
+using ArgumentNullException = System.ArgumentNullException;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class TemplateFeed_MMCS : MonoBehaviour
@@ -32,7 +34,8 @@ public class TemplateFeed_MMCS : MonoBehaviour
 
         List<MMCSFeed.NewsNode> newsNodes = feed.GetNewsNodes();
 
-        Assert.IsTrue(newsNodes != null && newsNodes.Count > 0, "newsNodes is empry or null");
+        if (newsNodes != null && newsNodes.Count > 0)
+            throw new ArgumentNullException("newsNodes is empry or null");
 
         Text HeaderText = templateNews.GetComponentsInChildren<Text>()[0];
         Text AuthorText = templateNews.GetComponentsInChildren<Text>()[1];
